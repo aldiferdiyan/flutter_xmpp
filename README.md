@@ -47,7 +47,7 @@ class _MyAppState extends State<MyApp> {
     var auth = {
       "user_jid": "papua-dev@0.0.0.0/Android",
       "password":"papua-dev",
-      "host":"192.168.101.176",
+      "host":"0.0.0.0",
       "port":5222
     };
     flutterXmpp = new FlutterXmpp(auth);
