@@ -163,6 +163,7 @@ public class FlutterXmppPlugin extends FlutterActivity implements MethodCallHand
 
             result.success("SUCCESS");
 
+            // still development for group message
         } else if (call.method.equals("send_group_message")) {
             if (!call.hasArgument("to_jid") || !call.hasArgument("body") || !call.hasArgument("id")) {
                 result.error("MISSING", "Missing argument to_jid / body / id chat.", null);

@@ -1,8 +1,8 @@
 name: flutter_xmpp
 description: Flutter XMPP for Realtime Communication, this plugin use Smack Library on Android to connect with XMPP server,currently this plugin still development and will be update ...
 version: 0.0.29
-author: aldiferdiyan <aldiferdiyan@gmail.com>
-homepage: https://github.com/aldiferdiyan
+author: Aldi Ferdiyan <aldiferdiyan@gmail.com>
+homepage: https://github.com/aldiferdiyan/flutter_xmpp
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
