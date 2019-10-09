@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/flutter_xmpp.iml" filepath="$PROJECT_DIR$/flutter_xmpp.iml" group="flutter_xmpp" />
+      <module fileurl="file://$PROJECT_DIR$/flutter_xmpp.iml" filepath="$PROJECT_DIR$/flutter_xmpp.iml" />
     </modules>
   </component>
 </project>

@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
-import 'dart:async';
+import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'dart:async';
 import 'package:flutter_xmpp/flutter_xmpp.dart';
 
 void main() => runApp(MyApp());
@@ -12,32 +13,90 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+  String rerceiveMessageFrom = '';
+  String rerceiveMessageBody = '';
+
+  FlutterXmpp flutterXmpp;
 
   @override
   void initState() {
     super.initState();
-    initPlatformState();
+    initXmpp();
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-      platformVersion = await FlutterXmpp.platformVersion;
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
 
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
+  @override
+  void dispose() async{
+    await flutterXmpp.stop();
+    super.dispose();
+  }
 
-    setState(() {
-      _platformVersion = platformVersion;
+  Future<void> initXmpp() async{
+    var auth = {
+      "user_jid": "22637@0.0.0.0/Android",
+      "password":"22637",
+      "host":"0.0.0.0",
+      "port":5222
+    };
+    flutterXmpp = new FlutterXmpp(auth);
+
+    // login
+    await flutterXmpp.login();
+
+    // start listening receive message
+    await flutterXmpp.start(_onReceiveMessage,_onError);
+
+    sleep(const Duration(seconds:2)); // just sample wait for get current state
+
+    print(await flutterXmpp.currentState()); // get current state
+
+    // sending Message
+    await flutterXmpp.sendMessage("1@0.0.0.0","test","random_id_for_sync_with_sqlite");
+
+
+    // read Message
+    await flutterXmpp.readMessage("1@0.0.0.0","random_id_for_sync_with_sqlite");
+
+
+    // life cycle, if app not active, kill stream get incoming message ..
+    lifeCycle();
+
+    // logout
+    await flutterXmpp.logout();
+
+  }
+
+  void lifeCycle() async{
+    SystemChannels.lifecycle.setMessageHandler((msg) async{
+      if(msg == "AppLifecycleState.inactive" || msg == "AppLifecycleState.suspending" ){
+        await flutterXmpp.stop();
+      }else if(msg == "AppLifecycleState.resumed"){
+        await flutterXmpp.start(_onReceiveMessage, _onError);
+      }
+      print('SystemChannels> $msg');
+      return "Lifecycle";
     });
+  }
+
+  void _onReceiveMessage(dynamic event) {
+    print(event);
+    if(event["type"] == "incoming") {
+      setState(() {
+        rerceiveMessageFrom = event['from'];
+        rerceiveMessageBody = event['body'];
+        rerceiveMessageBody = event['id']; // chat ID
+      });
+    } else {
+      setState(() {
+        rerceiveMessageFrom = event['to'];
+        rerceiveMessageBody = event['body'];
+        rerceiveMessageBody = event['id']; // chat ID
+      });
+    }
+  }
+
+  void _onError(Object error) {
+    print(error);
   }
 
   @override
@@ -45,10 +104,10 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('FlutterXMPP'),
         ),
         body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+          child: Text('Incoming or Outgoinng Message: \n$rerceiveMessageFrom\n$rerceiveMessageBody'),
         ),
       ),
     );
