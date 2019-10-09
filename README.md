@@ -1,4 +1,4 @@
-git # flutter_xmpp
+# flutter_xmpp
 
 [XMPP](https://xmpp.org/) for realtime chat communication,
 this plugin just only work for android ..
