@@ -3,7 +3,7 @@
 [XMPP](https://xmpp.org/) for realtime chat communication,
 this plugin just only work for android ..
 
-### Still Development
+## SORY THIS PROJECT IS NOT MAINTENANCE AGAIN ..
 
 ## Getting Started
 
